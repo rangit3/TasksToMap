@@ -7,10 +7,6 @@ def get_location_from_address(address):
     locationToLook = address.replace(',', '')
 
     time.sleep(1)
-    # badStartKeys = ReadFileLines('badstartkeys.txt')
-    # for k in badStartKeys:
-    #     if FromHebrew(k)[1:] in locationToLook.split(' ')[0]:
-    #         locationToLook = ' '.join(locationToLook.split(' ')[1:])
     get = False
     try:
         # get new in here:
@@ -20,20 +16,18 @@ def get_location_from_address(address):
         get = True
 
     except Exception as e:
-        X = 2
+        print(e)
+        
     if not get:
         try:
             backUpGeolocator = geopy.geocoders.Bing(
                 'Aj4HplPNElwLP_temgYW0JCF_3Jh0oMYCIUH4yxLK32PwAwP9G2bmTABcMpLwciY')
             gpsLocation = backUpGeolocator.geocode(locationToLook)
         except Exception as e:
-            X = 2
-        # backUpGeolocator = geopy.geocoders.GoogleV3('AIzaSyBaEq6z0fZ8RWiPjdQK1X4gvXgYtMYvg9Q')
-        # gpsLocation = backUpGeolocator.geocode(locationToLook)
-        # geolocator = geopy.geocoders.Nominatim()
-        # gpsLocation = geolocator.geocode(locationToLook)
+            print(e)
 
     return gpsLocation
+    
 def parse_csv(path_csv):
     #must have Address column
     #should have: Category, ID, Other_Information, Status
@@ -49,15 +43,12 @@ def parse_csv(path_csv):
     df['long']=longs
 
     df.to_csv('reports_updated.csv')
-
-    x=2
-
-
+  
+    print('done!!')
 
 def main():
     path_csv = 'reports.csv'
     parse_csv(path_csv)
-
 
 if __name__ == '__main__':
     main()
