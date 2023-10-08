@@ -42,9 +42,12 @@ pip install pandas
 7. Select the location columns
    ![image](https://github.com/rangit3/TasksToMap/assets/24866224/bcba8b4d-bc8b-42b5-818c-af8e256d0d33)
 
-8. The output is
+9. The output is
   ![image](https://github.com/rangit3/TasksToMap/assets/24866224/6b97be1f-a01a-455e-b532-1f0bdcff24f5)
 
+## Licence
+### The Unlicense
+A license with no conditions whatsoever 
  
    
 
