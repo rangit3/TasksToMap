@@ -1,6 +1,7 @@
 import time
 import geopy
 import pandas as pd
+import math
 
 def get_location_from_address(address):
     gpsLocation = None
@@ -32,14 +33,16 @@ def parse_csv(path_csv):
     #should have: Category, ID, Other_Information, Status
 
     df = pd.read_csv(path_csv, index_col=0)
-    addresses = df['Address'].to_numpy()
-    gps_locatoins = [get_location_from_address(address) for address in addresses]
-    addresses_found = [x.address for x in gps_locatoins]
-    lats = [x.latitude for x in gps_locatoins]
-    longs = [x.longitude for x in gps_locatoins]
-    df['addresses_found']=addresses_found
-    df['lat']=lats
-    df['long']=longs
+    if not ('lat' in list(df)) and not('long' in list(df)):
+        df["lat"] = math.nan
+        df["long"] = math.nan
+    for i in range(len(df)):
+        if math.isnan(df.loc[i, "lat"]) or math.isnan(df.loc[i, "long"]):
+            address = df.loc[i, "Address"]
+            gps_location = get_location_from_address(address)
+            df.loc[i, "lat"] = gps_location.latitude
+            df.loc[i, "long"] = gps_location.longitude
+            df.loc[i, "address_found"] = gps_location.address
 
     df.to_csv('reports_updated.csv')
 
