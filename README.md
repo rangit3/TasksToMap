@@ -27,7 +27,8 @@ pip install pandas
 ## Usage guides
 
 1. Fill google sheets/ csv file with taksk
-![image](https://github.com/rangit3/TasksToMap/assets/24866224/6d26cf5d-2a9b-458b-b25f-133fca6e41d9)
+![image](https://github.com/rangit3/TasksToMap/assets/24866224/59ee9a18-700a-4884-8b84-187afb13c365)
+
 ###Must have column named "Address"
 
 3. Rename the csv "reports.csv"
