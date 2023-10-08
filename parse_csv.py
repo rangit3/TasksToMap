@@ -10,14 +10,13 @@ def get_location_from_address(address):
     get = False
     try:
         # get new in here:
-        # https://console.developers.google.com/google/maps-apis/apis/maps-backend.googleapis.com/credentials?project=my-project-1524911120610&duration=PT1H
+        # https://console.developers.google.com/
         backUpGeolocator = geopy.geocoders.GoogleV3('AIzaSyDujiJfrz1GorKb6p-HrzCE-oL_A8GN058')
         gpsLocation = backUpGeolocator.geocode(locationToLook)
         get = True
-
     except Exception as e:
         print(e)
-        
+
     if not get:
         try:
             backUpGeolocator = geopy.geocoders.Bing(
@@ -27,7 +26,7 @@ def get_location_from_address(address):
             print(e)
 
     return gpsLocation
-    
+
 def parse_csv(path_csv):
     #must have Address column
     #should have: Category, ID, Other_Information, Status
@@ -43,12 +42,6 @@ def parse_csv(path_csv):
     df['long']=longs
 
     df.to_csv('reports_updated.csv')
-  
+
     print('done!!')
 
-def main():
-    path_csv = 'reports.csv'
-    parse_csv(path_csv)
-
-if __name__ == '__main__':
-    main()
