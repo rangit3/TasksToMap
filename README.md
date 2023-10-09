@@ -52,8 +52,14 @@ Create a notebook and add the following commands:
 #upload the input csv into the created folder, and name it as reports.csv
 %cd TasksToMap
 !pip install -r requirements.txt
-!python main.py
-```
+!python main.py [--index] # index is optional For example: --index 2 - the column number of the address is 2 (the 3rd of 0,1,2)
+
+#copy results to google drive:
+from google.colab import drive
+drive.mount('/content/drive')
+!cp reports_updated.csv /content/drive/MyDrive
+
+``` 
 ## Licence
 ### The Unlicense
 A license with no conditions whatsoever 
