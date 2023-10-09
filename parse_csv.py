@@ -5,6 +5,22 @@ import math
 
 from consts import Consts
 
+def get_address_col(headers, args = None):
+    if args is not None:
+        if args.address_col is not None:
+            address_col_name = args.address_col
+            address_col_name_index = headers.index(address_col_name)
+        elif args.index > -1:
+            address_col_name = headers[args.index]
+            address_col_name_index = args.index
+        else:
+            address_col_name = Consts.address_col
+            address_col_name_index = headers.index(address_col_name)
+    else:
+        address_col_name = Consts.address_col
+        address_col_name_index = headers.index(address_col_name)
+    print(f'Address column: {address_col_name}')
+    return address_col_name, address_col_name_index
 
 def get_location_from_address(address):
     locationToLook = address.replace(',', '')
@@ -45,21 +61,23 @@ def get_location_using_google(locationToLook):
     return get, gpsLocation
 
 
-def parse_csv(path_csv, address_col = 'Address'):
+def parse_csv(path_csv, args = None ):
     #must have Address column
     #should have: Category, ID, Other_Information, Status
 
-    df = pd.read_csv(path_csv, index_col=0)
+    df = pd.read_csv(path_csv)
+    headers = list(df)
+    address_col_name, address_col_name_index = get_address_col(headers, args = args)
 
-    if not (Consts.lat_col in list(df)) and not(Consts.long_col in list(df)):
+    if not (Consts.lat_col in headers) and not(Consts.long_col in headers):
         df[Consts.lat_col] = math.nan
         df[Consts.long_col] = math.nan
-    empty_rows = df[address_col].isnull()
+    empty_rows = df[address_col_name].isnull()
     for i, row in df.iterrows():
         if empty_rows[i]:
             continue
         if math.isnan(row[Consts.lat_col]) or math.isnan(row[Consts.long_col]):
-            address = row[address_col]
+            address = row[address_col_name]
             gps_location = get_location_from_address(address)
             if gps_location is None:
                 print(f'address was not found for {address}')
@@ -68,7 +86,7 @@ def parse_csv(path_csv, address_col = 'Address'):
                 df.at[i, Consts.long_col] = gps_location.longitude
                 df.at[i, Consts.address_found_col] = gps_location.address
 
-    df.to_csv('reports_updated.csv')
+    df.to_csv('reports_updated.csv', index=False)
 
     print('done!!')
 

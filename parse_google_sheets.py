@@ -38,7 +38,7 @@ def get_column_length(sheet) -> int:
     return len(values[0])
 
 
-def parse_sheet(sheet, address_col = 'Address'):
+def parse_sheet(sheet, args = None):
     column_length = get_column_length(sheet)
     last_column = chr(ord('A') + column_length)
     print(last_column)
@@ -52,7 +52,7 @@ def parse_sheet(sheet, address_col = 'Address'):
         return
 
     headers = values[0]
-    address_column_index = headers.index(address_col)
+    address_col, address_column_index = parse_csv.get_address_col(headers, args)
     new_data = [[Consts.address_found_col, Consts.lat_col, Consts.long_col ]]
     update_range = chr(ord('A') + column_length + 1) + '1'
     for idx, row in enumerate(values[1:]):
@@ -65,7 +65,7 @@ def parse_sheet(sheet, address_col = 'Address'):
                                 body={'values': new_data}).execute())
 
 
-def main():
+def parse_google_sheet(path_csv = None, args = None):
     """Shows basic usage of the Sheets API.
     Prints values from a sample spreadsheet.
     """
@@ -96,4 +96,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parse_google_sheet()
