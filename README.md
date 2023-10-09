@@ -46,18 +46,54 @@ pip install pandas
   ![image](https://github.com/rangit3/TasksToMap/assets/24866224/6b97be1f-a01a-455e-b532-1f0bdcff24f5)
 
 ## Google Colab Usage guides
-Create a notebook and add the following commands:
+Create a notebook and add the following commands (or download the notebook in the repo).
+Fill the parameter URL, and index if the column name of the address is not "Address"
 ```sh
+####Params#####
+#google sheet with the tasks:
+URL = ''
+
+####Optional Params#####
+# the index (starts at 0) where the address column is
+# -1 means to look for column which the first cell is 'Address'
+ADDRESS_INDEX = -1
+# the index (starts at 0) of the worksheet to download
+WORKSHEET_INDEX = 0
+
+%cd /content
+#!pip install --upgrade -q gspread
+%rm -r TasksToMap &> /dev/null
 !git clone https://github.com/rangit3/TasksToMap.git
+
+from google.colab import auth
+import csv
+auth.authenticate_user()
+
+import gspread
+from google.auth import default
+creds, _ = default()
+
+gc = gspread.authorize(creds)
+sheet = gc.open_by_url(URL)
+worksheet = sheet.get_worksheet(WORKSHEET_INDEX)
+data = worksheet.get_all_values()
+
+with open('/content/TasksToMap/reports.csv', 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerows(data)
+
 #upload the input csv into the created folder, and name it as reports.csv
-%cd TasksToMap
-!pip install -r requirements.txt
-!python main.py [--index] # index is optional For example: --index 2 - the column number of the address is 2 (the 3rd of 0,1,2)
+%cd /content/TasksToMap
+!pip install -q -r requirements.txt
+print("\nCode is running\n")
+!python main.py --index {ADDRESS_INDEX}
 
 #copy results to google drive:
 from google.colab import drive
-drive.mount('/content/drive')
+drive.mount("/content/drive", force_remount=True)
 !cp reports_updated.csv /content/drive/MyDrive
+
+print("\nDone. Search for reports_updated.csv in your drive!")
 
 ``` 
 ## Licence
