@@ -45,6 +45,15 @@ pip install pandas
 9. The output is
   ![image](https://github.com/rangit3/TasksToMap/assets/24866224/6b97be1f-a01a-455e-b532-1f0bdcff24f5)
 
+## Google Colab Usage guides
+Create a notebook and add the following commands:
+```sh
+!git clone https://github.com/rangit3/TasksToMap.git
+#upload the input csv into the created folder, and name it as reports.csv
+%cd TasksToMap
+!pip install -r requirements.txt
+!python main.py
+```
 ## Licence
 ### The Unlicense
 A license with no conditions whatsoever 
