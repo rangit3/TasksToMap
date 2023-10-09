@@ -9,6 +9,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 import parse_csv
+from consts import Consts
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
@@ -37,7 +38,7 @@ def get_column_length(sheet) -> int:
     return len(values[0])
 
 
-def parse_sheet(sheet):
+def parse_sheet(sheet, address_col = 'Address'):
     column_length = get_column_length(sheet)
     last_column = chr(ord('A') + column_length)
     print(last_column)
@@ -51,8 +52,8 @@ def parse_sheet(sheet):
         return
 
     headers = values[0]
-    address_column_index = headers.index('Address')
-    new_data = [['addresses_found', 'lat', 'long'   ]]
+    address_column_index = headers.index(address_col)
+    new_data = [[Consts.address_found_col, Consts.lat_col, Consts.long_col ]]
     update_range = chr(ord('A') + column_length + 1) + '1'
     for idx, row in enumerate(values[1:]):
         address = parse_csv.get_location_from_address(row[address_column_index])

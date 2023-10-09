@@ -3,6 +3,9 @@ import geopy
 import pandas as pd
 import math
 
+from consts import Consts
+
+
 def get_location_from_address(address):
     locationToLook = address.replace(',', '')
 
@@ -42,27 +45,28 @@ def get_location_using_google(locationToLook):
     return get, gpsLocation
 
 
-def parse_csv(path_csv):
+def parse_csv(path_csv, address_col = 'Address'):
     #must have Address column
     #should have: Category, ID, Other_Information, Status
 
     df = pd.read_csv(path_csv, index_col=0)
-    if not ('lat' in list(df)) and not('long' in list(df)):
-        df["lat"] = math.nan
-        df["long"] = math.nan
-    empty_rows = df['Address'].isnull()
+
+    if not (Consts.lat_col in list(df)) and not(Consts.long_col in list(df)):
+        df[Consts.lat_col] = math.nan
+        df[Consts.long_col] = math.nan
+    empty_rows = df[address_col].isnull()
     for i, row in df.iterrows():
         if empty_rows[i]:
             continue
-        if math.isnan(row["lat"]) or math.isnan(row["long"]):
-            address = row["Address"]
+        if math.isnan(row[Consts.lat_col]) or math.isnan(row[Consts.long_col]):
+            address = row[address_col]
             gps_location = get_location_from_address(address)
             if gps_location is None:
                 print(f'address was not found for {address}')
             else:
-                df.at[i,"lat"] = gps_location.latitude
-                df.at[i,"long"] = gps_location.longitude
-                df.at[i,"address_found"] = gps_location.address
+                df.at[i, Consts.lat_col] = gps_location.latitude
+                df.at[i, Consts.long_col] = gps_location.longitude
+                df.at[i, Consts.address_found_col] = gps_location.address
 
     df.to_csv('reports_updated.csv')
 
