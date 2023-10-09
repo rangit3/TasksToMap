@@ -4,7 +4,7 @@ import argparse
 
 def main():
     arg_parser  = argparse.ArgumentParser()
-    arg_parser .add_argument("--index", default=2,
+    arg_parser .add_argument("--index", default=-1, type= int,
                            help="index of column that contain the address")
     arg_parser .add_argument("--address_col", default=None,
                            help="name of column that contain the address")
