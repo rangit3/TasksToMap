@@ -47,7 +47,9 @@ pip install pandas
 
 ## Google Colab Usage guides
 Create a notebook and add the following commands (or download the notebook in the repo).
-Fill the parameter URL, and index if the column name of the address is not "Address"
+
+Fill the parameter URL, and index if the column name of the address is not "Address".
+
 ```sh
 ####Params#####
 #google sheet with the tasks:
