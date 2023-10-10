@@ -10,7 +10,7 @@ class Consts(object):
     address_found_col = "address_found"
     default_lat = 32.06550280107574
     default_long =34.668723533689565
-    empty_vals_replacers: List[EmptyValueReplacer] = []
-    ignore_values: List[ValueToIgnore] = []
+    empty_vals_replacers: List[EmptyValueReplacer] = [EmptyValueReplacer(col_name="Status", replacer="חדש")]
+    ignore_values: List[ValueToIgnore] = [ValueToIgnore("Status", val_to_ignore="נמסר")]
 
     address_col = 'Address'
