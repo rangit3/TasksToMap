@@ -8,6 +8,9 @@ def main():
                            help="index of column that contain the address")
     arg_parser .add_argument("--address_col", default=None,
                            help="name of column that contain the address")
+    arg_parser.add_argument("--random_same_location", default=True,
+                            help="If city is provided, it will change a little the pin location for different tasks")
+
     args = arg_parser.parse_args()
 
     path_csv = 'reports.csv'

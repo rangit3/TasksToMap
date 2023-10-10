@@ -2,8 +2,17 @@ import time
 import geopy
 import pandas as pd
 import math
+import random
 
 from consts import Consts
+
+def randomize_coordinates(args,location):
+    new_location = location
+    if args.random_same_location:
+        rand_num = 1 if random.random() < 0.5 else -1
+        rand_num = rand_num * random.uniform(0.1, 0.2)/500
+        new_location = location + rand_num
+    return new_location
 
 def get_address_col(headers, args = None):
     if args is not None:
@@ -81,9 +90,12 @@ def parse_csv(path_csv, args = None ):
             gps_location = get_location_from_address(address)
             if gps_location is None:
                 print(f'address was not found for {address}')
+                df.at[i, Consts.lat_col] = randomize_coordinates(args,Consts.default_lat)
+                df.at[i, Consts.long_col] = randomize_coordinates(args,Consts.default_long)
+
             else:
-                df.at[i, Consts.lat_col] = gps_location.latitude
-                df.at[i, Consts.long_col] = gps_location.longitude
+                df.at[i, Consts.lat_col] = randomize_coordinates(args,gps_location.latitude)
+                df.at[i, Consts.long_col] = randomize_coordinates(args,gps_location.longitude)
                 df.at[i, Consts.address_found_col] = gps_location.address
 
     df.to_csv('reports_updated.csv', index=False)
