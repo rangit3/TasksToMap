@@ -69,6 +69,12 @@ def get_location_using_google(locationToLook):
         print(e)
     return get, gpsLocation
 
+def process_df(df: pd.DataFrame):
+    for val_replacer in Consts.empty_vals_replacers:
+        df[val_replacer.col_name].fillna(val_replacer.replacer, inplace=True)
+    for ignore_value in Consts.ignore_values:
+        df = df[df[ignore_value.col_name] != ignore_value.val_to_ignore]
+    return df
 
 def parse_csv(path_csv, args = None ):
     #must have Address column
@@ -79,6 +85,7 @@ def parse_csv(path_csv, args = None ):
     if (len(set(headers)) != len(headers)):
         print('Warning: There are multiple columns with the same name. It might cause issues')
     address_col_name, address_col_name_index = get_address_col(headers, args = args)
+    df = process_df(df)
 
     if not (Consts.lat_col in headers) and not(Consts.long_col in headers):
         df[Consts.lat_col] = math.nan
