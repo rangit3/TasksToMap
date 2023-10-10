@@ -11,11 +11,13 @@
 -- lat - the latitude of the address
 -- long - the longitude of the address
 ```
-## Next Features
+## Advanced Features
 
 - Get the excel directly from google sheets
+- Use Google Colab for full pipeline without any installations
 - Use Google Maps API to update the map
-- Add option to use existing coordinate in the csv
+  
+
 
 ## Installation
 ```sh
