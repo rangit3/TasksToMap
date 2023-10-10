@@ -8,8 +8,8 @@ class Consts(object):
     lat_col = "lat"
     long_col = "long"
     address_found_col = "address_found"
-    default_lat = 32.06550280107574
-    default_long =34.668723533689565
+    default_lat = 34.74852501 #Cyprus
+    default_long =32.99089267
     empty_vals_replacers: List[EmptyValueReplacer] = []
     ignore_values: List[ValueToIgnore] = []
 

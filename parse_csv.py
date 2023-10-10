@@ -11,6 +11,7 @@ def randomize_coordinates(args,location):
     if args.random_same_location:
         rand_num = 1 if random.random() < 0.5 else -1
         rand_num = rand_num * random.uniform(0.1, 0.2)/500
+        rand_num = round(rand_num, 6)
         new_location = location + rand_num
     return new_location
 
