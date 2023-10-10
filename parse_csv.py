@@ -3,7 +3,11 @@ import geopy
 import pandas as pd
 import math
 import random
-import httpx
+import sys
+try:
+    import httpx
+except:
+    import requests
 from pyproj import Transformer
 
 from consts import Consts
@@ -78,23 +82,32 @@ def get_location_using_google(locationToLook):
     return get, gpsLocation
 
 def get_location_using_govmap(locationToLook):
-    url = f'https://es.govmap.gov.il/TldSearch/api/DetailsByQuery?query={locationToLook}&lyrs=-1&gid=govmap'
-    govmap_response = httpx.get(url)
-    if govmap_response.status_code != 200:
-        return None
+    gpsLocation = None
+    try:
+        url = f'https://es.govmap.gov.il/TldSearch/api/DetailsByQuery?query={locationToLook}&lyrs=-1&gid=govmap'
+        if 'httpx' in sys.modules:
+            govmap_response = httpx.get(url)
+        else:
+            govmap_response = requests.get(url)
+        if govmap_response.status_code != 200:
+            return None
 
-    data = govmap_response.json()
+        data = govmap_response.json()
 
-    if not data['data']:
-        return None
-    if data['data'].get('ADDRESS'):
-        found = data['data']['ADDRESS'][0]
-    elif data['data'].get('SETTLEMENT'):
-        found = data['data']['SETTLEMENT'][0]
-    else:
-        return None
-    return geopy.location.Location(found['ResultLable'],
-                                   transformer.transform(found['X'], found['Y']), True)
+        if not data['data']:
+            return None
+        if data['data'].get('ADDRESS'):
+            found = data['data']['ADDRESS'][0]
+        elif data['data'].get('SETTLEMENT'):
+            found = data['data']['SETTLEMENT'][0]
+        else:
+            return None
+        gpsLocation =  geopy.location.Location(found['ResultLable'],
+                                       transformer.transform(found['X'], found['Y']), True)
+    except Exception as e:
+        print(f'could not find address for {locationToLook}')
+
+    return gpsLocation
 
 def parse_csv(path_csv, args = None ):
     #must have Address column
@@ -102,6 +115,8 @@ def parse_csv(path_csv, args = None ):
 
     df = pd.read_csv(path_csv)
     headers = list(df)
+    if (len(set(headers)) != len(headers)):
+        print('Warning: There are multiple columns with the same name. It might cause issues')
     address_col_name, address_col_name_index = get_address_col(headers, args = args)
 
     if not (Consts.lat_col in headers) and not(Consts.long_col in headers):
@@ -127,4 +142,3 @@ def parse_csv(path_csv, args = None ):
     df.to_csv('reports_updated.csv', index=False)
 
     print('done!!')
-
