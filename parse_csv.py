@@ -76,6 +76,8 @@ def parse_csv(path_csv, args = None ):
 
     df = pd.read_csv(path_csv)
     headers = list(df)
+    if (len(set(headers)) != len(headers)):
+        print('Warning: There are multiple columns with the same name. It might cause issues')
     address_col_name, address_col_name_index = get_address_col(headers, args = args)
 
     if not (Consts.lat_col in headers) and not(Consts.long_col in headers):
