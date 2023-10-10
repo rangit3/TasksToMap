@@ -20,8 +20,7 @@
 ## Installation
 ```sh
 Python 3.6+
-pip install geopy
-pip install pandas
+pip install -q -r requirements.txt
 ```
 
 ## Usage guides
