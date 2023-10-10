@@ -3,8 +3,14 @@ import geopy
 import pandas as pd
 import math
 import random
+import httpx
+from pyproj import Transformer
 
 from consts import Consts
+
+
+transformer = Transformer.from_crs("EPSG:6991", "EPSG:4326")
+
 
 def randomize_coordinates(args,location):
     new_location = location
@@ -41,6 +47,8 @@ def get_location_from_address(address):
     # get, gpsLocation = get_location_using_google(locationToLook)
     if not get:
         gpsLocation = get_location_using_bing(locationToLook)
+        if not gpsLocation:
+            gpsLocation = get_location_using_govmap(locationToLook)
 
     return gpsLocation
 
@@ -69,6 +77,24 @@ def get_location_using_google(locationToLook):
         print(e)
     return get, gpsLocation
 
+def get_location_using_govmap(locationToLook):
+    url = f'https://es.govmap.gov.il/TldSearch/api/DetailsByQuery?query={locationToLook}&lyrs=-1&gid=govmap'
+    govmap_response = httpx.get(url)
+    if govmap_response.status_code != 200:
+        return None
+
+    data = govmap_response.json()
+
+    if not data['data']:
+        return None
+    if data['data'].get('ADDRESS'):
+        found = data['data']['ADDRESS'][0]
+    elif data['data'].get('SETTLEMENT'):
+        found = data['data']['SETTLEMENT'][0]
+    else:
+        return None
+    return geopy.location.Location(found['ResultLable'],
+                                   transformer.transform(found['X'], found['Y']), True)
 
 def parse_csv(path_csv, args = None ):
     #must have Address column
