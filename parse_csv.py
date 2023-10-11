@@ -16,21 +16,25 @@ def randomize_coordinates(args,location):
     return new_location
 
 def get_address_col(headers, args = None):
-    if args is not None:
-        if args.address_col is not None:
-            address_col_name = args.address_col
-            address_col_name_index = headers.index(address_col_name)
-        elif args.index > -1:
-            address_col_name = headers[args.index]
-            address_col_name_index = args.index
+    try:
+        if args is not None:
+            if args.address_col is not None:
+                address_col_name = args.address_col
+                address_col_name_index = headers.index(address_col_name)
+            elif args.index > -1:
+                address_col_name = headers[args.index]
+                address_col_name_index = args.index
+            else:
+                address_col_name = Consts.address_col
+                address_col_name_index = headers.index(address_col_name)
         else:
             address_col_name = Consts.address_col
             address_col_name_index = headers.index(address_col_name)
-    else:
-        address_col_name = Consts.address_col
-        address_col_name_index = headers.index(address_col_name)
-    print(f'Address column: {address_col_name}')
-    return address_col_name, address_col_name_index
+        print(f'Address column: {address_col_name}')
+        return address_col_name, address_col_name_index
+    except Exception as e:
+        print(f"Could not find the column {address_col_name}. Exiting..")
+        exit(1)
 
 def get_location_from_address(address):
     locationToLook = address.replace(',', '')
@@ -71,11 +75,14 @@ def get_location_using_google(locationToLook):
     return get, gpsLocation
 
 def process_df(df: pd.DataFrame):
-    for val_replacer in Consts.empty_vals_replacers:
-        df[val_replacer.col_name].fillna(val_replacer.replacer, inplace=True)
-    for ignore_value in Consts.ignore_values:
-        df = df[df[ignore_value.col_name] != ignore_value.val_to_ignore]
-    return df
+    try:
+        for val_replacer in Consts.empty_vals_replacers:
+            df[val_replacer.col_name].fillna(val_replacer.replacer, inplace=True)
+        for ignore_value in Consts.ignore_values:
+            df = df[df[ignore_value.col_name] != ignore_value.val_to_ignore]
+        return df
+    except Exception as e:
+        print(f'Could not fix the csv: {e}')
 
 def parse_csv(path_csv, args = None ):
     #must have Address column
