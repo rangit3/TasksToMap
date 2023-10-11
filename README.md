@@ -13,7 +13,8 @@
 ```
 ## Advanced Features
 
-- Get the excel directly from google sheets
+- Get the excel directly from google sheets.
+- Tasks can be added to the google sheet automatically via Google Forms or other application.
 - Use Google Colab for full pipeline without any installations
 - Use Google Maps API to update the map
   
