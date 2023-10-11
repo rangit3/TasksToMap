@@ -2,3 +2,6 @@ pandas
 geopy
 google_oauth2_tool
 google-api-python-client
+httpx
+requests
+pyproj

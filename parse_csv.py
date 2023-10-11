@@ -3,8 +3,16 @@ import geopy
 import pandas as pd
 import math
 import random
+import sys
+try:
+    import httpx
+except:
+    import requests
+from pyproj import Transformer
 
 from consts import Consts
+
+transformer_parse_csv = Transformer.from_crs("EPSG:6991", "EPSG:4326")
 
 def randomize_coordinates(args,location):
     new_location = location
@@ -46,6 +54,8 @@ def get_location_from_address(address):
     # get, gpsLocation = get_location_using_google(locationToLook)
     if not get:
         gpsLocation = get_location_using_bing(locationToLook)
+        if not gpsLocation:
+            gpsLocation = get_location_using_govmap(locationToLook)
 
     return gpsLocation
 
@@ -73,6 +83,34 @@ def get_location_using_google(locationToLook):
     except Exception as e:
         print(e)
     return get, gpsLocation
+
+def get_location_using_govmap(locationToLook):
+    gpsLocation = None
+    try:
+        url = f'https://es.govmap.gov.il/TldSearch/api/DetailsByQuery?query={locationToLook}&lyrs=-1&gid=govmap'
+        if 'httpx' in sys.modules:
+            govmap_response = httpx.get(url)
+        else:
+            govmap_response = requests.get(url)
+        if govmap_response.status_code != 200:
+            return None
+
+        data = govmap_response.json()
+
+        if not data['data']:
+            return None
+        if data['data'].get('ADDRESS'):
+            found = data['data']['ADDRESS'][0]
+        elif data['data'].get('SETTLEMENT'):
+            found = data['data']['SETTLEMENT'][0]
+        else:
+            return None
+        gpsLocation =  geopy.location.Location(found['ResultLable'],
+                                       transformer_parse_csv.transform(found['X'], found['Y']), True)
+    except Exception as e:
+        print(f'could not find address for {locationToLook}')
+
+    return gpsLocation
 
 def process_df(df: pd.DataFrame):
     try:
