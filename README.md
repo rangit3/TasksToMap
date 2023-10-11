@@ -102,7 +102,7 @@ print("\nDone. Search for reports_updated.csv in your drive!")
 ``` 
 ## Licence
 ### The Unlicense
-A license with no conditions whatsoever 
+A license with no conditions whatsoever, except terrorists.
  
    
 
