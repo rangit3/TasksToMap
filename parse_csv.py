@@ -117,8 +117,8 @@ def parse_pairs_arg_to_list(dict_arg: str):
     return [p.split("=") for p in pairs]
 
 def process_df(df: pd.DataFrame, ignore_pairs, fill_pairs):
-    ignore_pairs_list = parse_pairs_arg_to_list(ignore_pairs) if ignore_pairs else {}
-    fill_pairs_list = parse_pairs_arg_to_list(fill_pairs) if fill_pairs else {}
+    ignore_pairs_list = parse_pairs_arg_to_list(ignore_pairs) if ignore_pairs else []
+    fill_pairs_list = parse_pairs_arg_to_list(fill_pairs) if fill_pairs else []
     try:
         for col, val_to_ignore in ignore_pairs_list:
             df = df[df[col] != val_to_ignore]
