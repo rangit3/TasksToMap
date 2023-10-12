@@ -112,12 +112,18 @@ def get_location_using_govmap(locationToLook):
 
     return gpsLocation
 
-def process_df(df: pd.DataFrame):
+def parse_pairs_arg_to_list(dict_arg: str):
+    pairs = dict_arg.split(",")
+    return [p.split("=") for p in pairs]
+
+def process_df(df: pd.DataFrame, ignore_pairs, fill_pairs):
+    ignore_pairs_list = parse_pairs_arg_to_list(ignore_pairs) if ignore_pairs else {}
+    fill_pairs_list = parse_pairs_arg_to_list(fill_pairs) if fill_pairs else {}
     try:
-        for val_replacer in Consts.empty_vals_replacers:
-            df[val_replacer.col_name].fillna(val_replacer.replacer, inplace=True)
-        for ignore_value in Consts.ignore_values:
-            df = df[df[ignore_value.col_name] != ignore_value.val_to_ignore]
+        for col, val_to_ignore in ignore_pairs_list:
+            df = df[df[col] != val_to_ignore]
+        for col, val_to_fill in fill_pairs_list:
+            df[col].fillna(val_to_fill, inplace=True)
         return df
     except Exception as e:
         print(f'Could not fix the csv: {e}')
@@ -131,7 +137,7 @@ def parse_csv(path_csv, args = None ):
     if (len(set(headers)) != len(headers)):
         print('Warning: There are multiple columns with the same name. It might cause issues')
     address_col_name, address_col_name_index = get_address_col(headers, args = args)
-    df = process_df(df)
+    df = process_df(df, args.ignore_pairs, args.fill_pairs)
 
     if not (Consts.lat_col in headers) and not(Consts.long_col in headers):
         df[Consts.lat_col] = math.nan
