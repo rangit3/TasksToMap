@@ -126,7 +126,8 @@ def process_df(df: pd.DataFrame, ignore_pairs, fill_pairs):
             df[col].fillna(val_to_fill, inplace=True)
         return df
     except Exception as e:
-        print(f'Could not fix the csv: {e}')
+        print(f'Error. Could not fix the csv: {e}. Please adjust the parameters correctly')
+        exit(1)
 
 def parse_csv(path_csv, args = None ):
     #must have Address column
