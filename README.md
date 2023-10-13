@@ -61,14 +61,21 @@ URL = ''
 # the index (starts at 0) where the address column is
 # -1 means to look for column which the first cell is 'Address'
 ADDRESS_INDEX = -1
+
 # the index (starts at 0) of the worksheet to download
 WORKSHEET_INDEX = 0
 
+# Fixing the csv: There are additional parameters to fix the csv.
+# Fill Cells: An option to fill the csv with default values per column. For example: !python main.py --index {ADDRESS_INDEX} --fill_pairs Status=חדש,Name=אנונימי
+# Ignore Lines: An option to ignore lines with specific values inside a cell. For example: !python main.py --index {ADDRESS_INDEX} --ignore_pairs Status=נמסר
+
+####Import The Code#####
 %cd /content
 #!pip install --upgrade -q gspread
 %rm -r TasksToMap &> /dev/null
 !git clone https://github.com/rangit3/TasksToMap.git
 
+####Run The Code#####
 from google.colab import auth
 import csv
 auth.authenticate_user()
@@ -92,7 +99,7 @@ with open('/content/TasksToMap/reports.csv', 'w', newline='') as csvfile:
 print("\nCode is running\n")
 !python main.py --index {ADDRESS_INDEX}
 
-#copy results to google drive:
+####Save the Results to Google Drive#####
 from google.colab import drive
 drive.mount("/content/drive", force_remount=True)
 !cp reports_updated.csv /content/drive/MyDrive
