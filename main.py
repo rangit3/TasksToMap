@@ -10,6 +10,12 @@ def main():
                            help="name of column that contain the address")
     arg_parser.add_argument("--random_same_location", default=True,
                             help="If city is provided, it will change a little the pin location for different tasks")
+    arg_parser.add_argument("--ignore_pairs", default=None,
+                            help="Pairs of column name and value to filter out separated by '=',"
+                                 "each pair separated by a semicolon")
+    arg_parser.add_argument("--fill_pairs", default=None,
+                            help="Pairs of column name and default value to fill empty cells separated by '=',"
+                                 "each pair separated by a semicolon")
 
     args = arg_parser.parse_args()
 
