@@ -4,6 +4,8 @@ import pandas as pd
 import math
 import random
 import sys
+from tqdm import tqdm
+
 try:
     import httpx
 except:
@@ -47,7 +49,7 @@ def get_address_col(headers, args = None):
 def get_location_from_address(address):
     locationToLook = address.replace(',', '')
 
-    time.sleep(1)
+    time.sleep(0.3)
     gpsLocation = None
     get = False
 
@@ -144,14 +146,14 @@ def parse_csv(path_csv, args = None ):
         df[Consts.lat_col] = math.nan
         df[Consts.long_col] = math.nan
     empty_rows = df[address_col_name].isnull()
-    for i, row in df.iterrows():
+    for i, row in tqdm(df.iterrows()):
         if empty_rows[i]:
             continue
         if math.isnan(row[Consts.lat_col]) or math.isnan(row[Consts.long_col]):
             address = row[address_col_name]
             gps_location = get_location_from_address(address)
             if gps_location is None:
-                print(f'address was not found for {address}')
+                print(f'address was not found for {address}, the point will appear outside of the country')
                 df.at[i, Consts.lat_col] = randomize_coordinates(args,Consts.default_lat)
                 df.at[i, Consts.long_col] = randomize_coordinates(args,Consts.default_long)
 
